@@ -44,44 +44,30 @@
 }
 :root {
   --radius: 0.625rem;
-
-  /* Base colors */
-  --background: oklch(12% 0.05 270); /* deep dark violet/blue */
-  --foreground: oklch(95% 0.02 270); /* almost white */
-
-  /* Surfaces */
+  --background: oklch(12% 0.05 270);
+  --foreground: oklch(95% 0.02 270);
   --card: oklch(15% 0.05 280);
   --card-foreground: var(--foreground);
   --popover: var(--card);
   --popover-foreground: var(--foreground);
-
-  /* Neon Primaries */
-  --primary: oklch(75% 0.32 320); /* neon magenta/pink */
-  --primary-foreground: oklch(98% 0.02 0); /* near white */
-
-  --secondary: oklch(75% 0.28 240); /* neon cyan/blue */
+  --primary: oklch(75% 0.32 320);
+  --primary-foreground: oklch(98% 0.02 0);
+  --secondary: oklch(75% 0.28 240);
   --secondary-foreground: oklch(98% 0.02 0);
-
-  --accent: oklch(80% 0.30 300); /* purple neon */
+  --accent: oklch(80% 0.30 300);
   --accent-foreground: oklch(98% 0.02 0);
-
   --muted: oklch(25% 0.03 280);
   --muted-foreground: oklch(70% 0.03 280);
-
-  --destructive: oklch(65% 0.30 20); /* neon red/orange */
+  --destructive: oklch(65% 0.30 20);
   --destructive-foreground: oklch(98% 0.02 0);
-
   --border: oklch(30% 0.06 280);
   --input: var(--border);
-  --ring: oklch(80% 0.32 320); 
-
-  --chart-1: oklch(80% 0.32 320); 
-  --chart-2: oklch(80% 0.30 240); 
-  --chart-3: oklch(80% 0.30 300); /* purple */
-  --chart-4: oklch(80% 0.28 200); /* blue */
-  --chart-5: oklch(80% 0.30 60);  /* yellow neon */
-
-  /* Sidebar */
+  --ring: oklch(80% 0.32 320);
+  --chart-1: oklch(80% 0.32 320);
+  --chart-2: oklch(80% 0.30 240);
+  --chart-3: oklch(80% 0.30 300);
+  --chart-4: oklch(80% 0.28 200);
+  --chart-5: oklch(80% 0.30 60);
   --sidebar: oklch(15% 0.05 270);
   --sidebar-foreground: var(--foreground);
   --sidebar-primary: var(--primary);
