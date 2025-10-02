@@ -1,17 +1,13 @@
 "use client";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   FolderOpen,
   Plus,
-  Search,
-  Filter,
   Edit,
   Trash2,
   Eye,
   Star,
-  GitBranch,
   ExternalLink,
   Calendar,
   MoreHorizontal,
@@ -29,9 +25,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -45,13 +39,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Sidebar } from "@/components/dashboard/sidebar";
 import {
   ProjectModal,
   ProjectFormData,
 } from "@/components/dashboard/project-modal";
+import { getProjects } from "@/services/project.service";
+import { IProject } from "@/interface";
 
-export default function Projects() {
+export default async function Projects() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -61,125 +56,26 @@ export default function Projects() {
     ProjectFormData | undefined
   >();
 
-  // Dummy project data
-  const projects = [
-    {
-      id: 1,
-      title: "E-Commerce Platform",
-      slug: "ecommerce-platform",
-      description:
-        "A full-featured e-commerce platform built with Next.js, Stripe, and PostgreSQL. Includes user authentication, product management, and payment processing.",
-      status: "published",
-      stars: 245,
-      forks: 89,
-      views: 1200,
-      featured: true,
-      createdAt: "2024-01-15",
-      updatedAt: "2024-03-10",
-      tags: ["Next.js", "TypeScript", "Stripe", "PostgreSQL"],
-      githubUrl: "https://github.com/username/ecommerce-platform",
-      liveUrl: "https://ecommerce-demo.com",
-      language: "TypeScript",
-      license: "MIT",
-    },
-    {
-      id: 2,
-      title: "AI Chat Assistant",
-      slug: "ai-chat-assistant",
-      description:
-        "An intelligent chat assistant powered by OpenAI API with real-time messaging, conversation history, and custom personality settings.",
-      status: "published",
-      stars: 189,
-      forks: 67,
-      views: 890,
-      featured: true,
-      createdAt: "2024-02-20",
-      updatedAt: "2024-03-05",
-      tags: ["React", "OpenAI", "Node.js", "Socket.io"],
-      githubUrl: "https://github.com/username/ai-chat-assistant",
-      liveUrl: "https://ai-chat-demo.com",
-      language: "JavaScript",
-      license: "MIT",
-    },
-    {
-      id: 3,
-      title: "Task Management System",
-      slug: "task-management-system",
-      description:
-        "A comprehensive task management application with drag-and-drop functionality, team collaboration, and progress tracking.",
-      status: "draft",
-      stars: 0,
-      forks: 0,
-      views: 0,
-      featured: false,
-      createdAt: "2024-03-10",
-      updatedAt: "2024-03-10",
-      tags: ["Vue.js", "Firebase", "Tailwind CSS"],
-      githubUrl: "",
-      liveUrl: "",
-      language: "JavaScript",
-      license: "MIT",
-    },
-    {
-      id: 4,
-      title: "Weather Dashboard",
-      slug: "weather-dashboard",
-      description:
-        "A beautiful weather dashboard with real-time data, location-based forecasts, and interactive weather maps.",
-      status: "published",
-      stars: 156,
-      forks: 45,
-      views: 678,
-      featured: false,
-      createdAt: "2023-12-01",
-      updatedAt: "2024-02-15",
-      tags: ["React", "Weather API", "Charts.js", "CSS"],
-      githubUrl: "https://github.com/username/weather-dashboard",
-      liveUrl: "https://weather-demo.com",
-      language: "JavaScript",
-      license: "Apache-2.0",
-    },
-    {
-      id: 5,
-      title: "Social Media Analytics",
-      slug: "social-media-analytics",
-      description:
-        "Analytics dashboard for social media platforms with data visualization, engagement metrics, and reporting features.",
-      status: "archived",
-      stars: 98,
-      forks: 23,
-      views: 445,
-      featured: false,
-      createdAt: "2023-10-15",
-      updatedAt: "2024-01-20",
-      tags: ["Python", "Django", "D3.js", "PostgreSQL"],
-      githubUrl: "https://github.com/username/social-analytics",
-      liveUrl: "",
-      language: "Python",
-      license: "GPL-3.0",
-    },
-  ];
-
-  const filteredProjects = projects.filter((project) => {
+  const projects = await getProjects();
+  const filteredProjects = projects.filter((project: IProject) => {
     const matchesSearch =
       project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       project.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       project.tags.some((tag) =>
         tag.toLowerCase().includes(searchTerm.toLowerCase())
       );
-    const matchesStatus =
-      statusFilter === "all" || project.status === statusFilter;
+    const matchesStatus = statusFilter === "all";
     return matchesSearch && matchesStatus;
   });
 
   const stats = {
-    total: projects.length,
-    published: projects.filter((p) => p.status === "published").length,
-    draft: projects.filter((p) => p.status === "draft").length,
-    archived: projects.filter((p) => p.status === "archived").length,
-    totalStars: projects.reduce((sum, project) => sum + project.stars, 0),
-    totalForks: projects.reduce((sum, project) => sum + project.forks, 0),
-    totalViews: projects.reduce((sum, project) => sum + project.views, 0),
+    total: 12,
+    published: 7,
+    draft: 3,
+    archived: 2,
+    totalStars: 150,
+    totalForks: 45,
+    totalViews: 1200,
   };
 
   const handleCreateProject = () => {
@@ -324,15 +220,6 @@ export default function Projects() {
 
           {/* Filters */}
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search projects..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-full sm:w-48">
                 <SelectValue placeholder="Filter by status" />
@@ -371,7 +258,7 @@ export default function Projects() {
               </Card>
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {filteredProjects.map((project) => (
+                {filteredProjects.map((project: IProject) => (
                   <Card
                     key={project.id}
                     className="hover:shadow-lg transition-shadow"
@@ -380,7 +267,7 @@ export default function Projects() {
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
-                            {getStatusBadge(project.status)}
+                            {/* {getStatusBadge(project.status)} */}
                             {project.featured && (
                               <Badge
                                 variant="outline"
@@ -391,12 +278,13 @@ export default function Projects() {
                               </Badge>
                             )}
                             <Badge variant="outline" className="text-xs">
-                              <div
+                              {/* <div
                                 className={`w-2 h-2 rounded-full mr-1 ${getLanguageColor(
                                   project.language
                                 )}`}
                               />
-                              {project.language}
+                              {project.language} */}{" "}
+                              javaScript
                             </Badge>
                           </div>
                           <CardTitle className="text-lg mb-2">
@@ -455,15 +343,10 @@ export default function Projects() {
                             {project.stars}
                           </span>
                           <span className="flex items-center gap-1">
-                            <GitBranch className="h-3 w-3" />
-                            {project.forks}
-                          </span>
-                          <span className="flex items-center gap-1">
                             <Eye className="h-3 w-3" />
                             {project.views}
                           </span>
                         </div>
-                        <span className="text-xs">{project.license}</span>
                       </div>
 
                       <div className="flex gap-2">
@@ -492,9 +375,6 @@ export default function Projects() {
                       <div className="flex items-center gap-2 mt-4 text-xs text-muted-foreground">
                         <Calendar className="h-3 w-3" />
                         Created {project.createdAt}
-                        {project.updatedAt !== project.createdAt && (
-                          <>• Updated {project.updatedAt}</>
-                        )}
                       </div>
                     </CardContent>
                   </Card>

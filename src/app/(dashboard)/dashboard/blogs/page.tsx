@@ -5,13 +5,9 @@ import { useRouter } from "next/navigation";
 import {
   FileText,
   Plus,
-  Search,
-  Filter,
   Edit,
   Trash2,
   Eye,
-  Heart,
-  MessageCircle,
   Calendar,
   Clock,
   MoreHorizontal,
@@ -19,17 +15,9 @@ import {
   Archive,
   CheckCircle,
 } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -43,10 +31,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Sidebar } from "@/components/dashboard/sidebar";
 import { BlogModal, BlogFormData } from "@/components/dashboard/blog-modal";
+import { getBlogs } from "@/services/blog.service";
+import { IPost } from "@/interface";
 
-export default function Blogs() {
+export default async function Blogs() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -54,110 +43,25 @@ export default function Blogs() {
   const [modalMode, setModalMode] = useState<"create" | "edit">("create");
   const [selectedBlog, setSelectedBlog] = useState<BlogFormData | undefined>();
 
-  // Dummy blog data
-  const blogs = [
-    {
-      id: 1,
-      title: "Building Scalable React Applications",
-      slug: "building-scalable-react-applications",
-      excerpt:
-        "Learn how to build React applications that can scale with your business needs and user base.",
-      status: "published",
-      views: 1250,
-      likes: 89,
-      comments: 12,
-      publishedAt: "2024-03-15",
-      author: "B5A7",
-      tags: ["React", "JavaScript", "Architecture"],
-      featured: true,
-      readTime: "8 min",
-    },
-    {
-      id: 2,
-      title: "Mastering TypeScript Patterns",
-      slug: "mastering-typescript-patterns",
-      excerpt:
-        "Advanced TypeScript patterns and best practices for building type-safe applications.",
-      status: "draft",
-      views: 0,
-      likes: 0,
-      comments: 0,
-      publishedAt: null,
-      author: "B5A7",
-      tags: ["TypeScript", "Patterns", "Best Practices"],
-      featured: false,
-      readTime: "12 min",
-    },
-    {
-      id: 3,
-      title: "Web Development Trends 2024",
-      slug: "web-development-trends-2024",
-      excerpt:
-        "Explore the latest trends and technologies shaping the web development landscape in 2024.",
-      status: "published",
-      views: 1450,
-      likes: 112,
-      comments: 23,
-      publishedAt: "2024-03-05",
-      author: "B5A7",
-      tags: ["Trends", "2024", "Web Development"],
-      featured: true,
-      readTime: "6 min",
-    },
-    {
-      id: 4,
-      title: "Introduction to Next.js 15",
-      slug: "introduction-to-nextjs-15",
-      excerpt:
-        "Get started with Next.js 15 and learn about its new features and improvements.",
-      status: "published",
-      views: 890,
-      likes: 67,
-      comments: 8,
-      publishedAt: "2024-02-28",
-      author: "B5A7",
-      tags: ["Next.js", "React", "Framework"],
-      featured: false,
-      readTime: "10 min",
-    },
-    {
-      id: 5,
-      title: "CSS Grid vs Flexbox",
-      slug: "css-grid-vs-flexbox",
-      excerpt:
-        "A comprehensive comparison between CSS Grid and Flexbox, and when to use each.",
-      status: "archived",
-      views: 567,
-      likes: 34,
-      comments: 5,
-      publishedAt: "2024-01-15",
-      author: "B5A7",
-      tags: ["CSS", "Grid", "Flexbox"],
-      featured: false,
-      readTime: "7 min",
-    },
-  ];
+  const blogs = await getBlogs();
 
-  const filteredBlogs = blogs.filter((blog) => {
+  const filteredBlogs = blogs.filter((blog: IPost) => {
     const matchesSearch =
       blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       blog.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
       blog.tags.some((tag) =>
         tag.toLowerCase().includes(searchTerm.toLowerCase())
       );
-    const matchesStatus =
-      statusFilter === "all" || blog.status === statusFilter;
+    const matchesStatus = statusFilter === "all";
     return matchesSearch && matchesStatus;
   });
 
   const stats = {
-    total: blogs.length,
-    published: blogs.filter((b) => b.status === "published").length,
-    draft: blogs.filter((b) => b.status === "draft").length,
-    archived: blogs.filter((b) => b.status === "archived").length,
-    totalViews: blogs.reduce((sum, blog) => sum + blog.views, 0),
-    totalLikes: blogs.reduce((sum, blog) => sum + blog.likes, 0),
-    totalComments: blogs.reduce((sum, blog) => sum + blog.comments, 0),
+    total: 10,
+    published: 10,
+    draft: 45,
+    archived: 23,
+    totalViews: 34,
   };
 
   const handleCreateBlog = () => {
@@ -167,13 +71,11 @@ export default function Blogs() {
   };
 
   const handleEditBlog = (blog: any) => {
-    // Navigate to the edit page instead of opening modal
     router.push(`blogs/edit/${blog.slug}`);
   };
 
   const handleBlogSubmit = async (data: BlogFormData) => {
     console.log("Blog data:", data);
-    // API call would go here
     alert(
       `${
         modalMode === "create" ? "Created" : "Updated"
@@ -267,27 +169,10 @@ export default function Blogs() {
                 <div className="text-xs text-muted-foreground">Views</div>
               </CardContent>
             </Card>
-            <Card>
-              <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold text-red-500">
-                  {stats.totalLikes}
-                </div>
-                <div className="text-xs text-muted-foreground">Likes</div>
-              </CardContent>
-            </Card>
           </div>
 
           {/* Filters */}
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search blog posts..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-full sm:w-48">
                 <SelectValue placeholder="Filter by status" />
@@ -325,7 +210,7 @@ export default function Blogs() {
                 </CardContent>
               </Card>
             ) : (
-              filteredBlogs.map((blog) => (
+              filteredBlogs.map((blog: IPost) => (
                 <Card
                   key={blog.id}
                   className="hover:shadow-lg transition-shadow"
@@ -334,7 +219,7 @@ export default function Blogs() {
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
-                          {getStatusBadge(blog.status)}
+                          {/* {getStatusBadge(blog.status)} */}
                           {blog.featured && (
                             <Badge
                               variant="outline"
@@ -360,7 +245,7 @@ export default function Blogs() {
                             <Clock className="h-3 w-3" />
                             {blog.readTime}
                           </span>
-                          <span className="flex items-center gap-1">
+                          {/* <span className="flex items-center gap-1">
                             <Eye className="h-3 w-3" />
                             {blog.views.toLocaleString()}
                           </span>
@@ -371,7 +256,7 @@ export default function Blogs() {
                           <span className="flex items-center gap-1">
                             <MessageCircle className="h-3 w-3" />
                             {blog.comments}
-                          </span>
+                          </span> */}
                         </div>
                         <div className="flex flex-wrap gap-1 mt-3">
                           {blog.tags.map((tag) => (
