@@ -1,26 +1,15 @@
-import { Button } from "@/components/ui/button";
-import { ChevronRight } from "lucide-react";
-import BlogCard from "../BlogCard";
 import { IPost } from "@/interface";
 import { BASE_URL, ENDPOINTS } from "@/config/api";
-import Link from "next/link";
+import BlogCard from "@/components/BlogCard";
+import { getBlogs } from "@/services/blog.service";
 
-export default async function Blog() {
-  const res = await fetch(`${BASE_URL}${ENDPOINTS.BLOG}`, {
-    next: {
-      revalidate: 60,
-    },
-  });
-
-  if (!res.ok) throw new Error("Failed to fetch blogs");
-  const data = await res.json();
-  const blogPosts = data?.data || [];
+export default async function Blogs() {
+  const blogPosts = await getBlogs();
 
   console.log(blogPosts);
   return (
     <section id="blog" className="py-20 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
             <span className="bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
@@ -44,21 +33,9 @@ export default async function Blog() {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {blogPosts?.slice(0, 3)?.map((post: IPost) => (
+          {blogPosts?.map((post: IPost) => (
             <BlogCard key={post.id} post={post} />
           ))}
-        </div>
-
-        <div className="text-center mt-12">
-          <Link href="/blogs">
-            <Button
-              size="lg"
-              className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white"
-            >
-              Load More Articles
-              <ChevronRight className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
         </div>
       </div>
     </section>

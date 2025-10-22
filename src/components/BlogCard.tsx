@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { IPost } from "@/interface";
+import Link from "next/link";
 
 const BlogCard = ({ post }: { post: IPost }) => (
   <Card className="group h-full bg-gradient-to-br from-cyan-500/5 to-purple-500/5 border-cyan-500/20 hover:border-cyan-500/40 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/10">
@@ -89,13 +90,15 @@ const BlogCard = ({ post }: { post: IPost }) => (
       </div>
 
       <div className="mt-4 pt-4 border-t border-border">
-        <Button
-          variant="ghost"
-          className="w-full justify-between group-hover:bg-cyan-500/10 group-hover:text-cyan-500"
-        >
-          Read More
-          <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-        </Button>
+        <Link href={`/blogs/${post?.slug}`}>
+          <Button
+            variant="ghost"
+            className="w-full justify-between group-hover:bg-cyan-500/10 group-hover:text-cyan-500 cursor-pointer"
+          >
+            Read More
+            <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+          </Button>
+        </Link>
       </div>
     </CardContent>
   </Card>

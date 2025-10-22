@@ -1,9 +1,8 @@
-import { ExternalLink, Github, Star, Eye, Calendar } from "lucide-react";
+import { ExternalLink, Github, Star, Eye, Calendar, Link } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { IProject } from "@/interface";
-
 
 const ProjectCard = ({ project }: { project: IProject }) => (
   <Card className="group h-full bg-gradient-to-br from-cyan-500/5 to-purple-500/5 border-cyan-500/20 hover:border-cyan-500/40 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/10">
@@ -23,11 +22,18 @@ const ProjectCard = ({ project }: { project: IProject }) => (
 
         <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-4">
           <div className="flex gap-2">
-            <Button size="sm" variant="secondary" className="bg-background/80 backdrop-blur-sm">
+            <Button
+              size="sm"
+              variant="secondary"
+              className="bg-background/80 backdrop-blur-sm"
+            >
               <Github className="h-4 w-4 mr-1" />
               Code
             </Button>
-            <Button size="sm" className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white">
+            <Button
+              size="sm"
+              className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white"
+            >
               <ExternalLink className="h-4 w-4 mr-1" />
               Live Demo
             </Button>
@@ -53,7 +59,9 @@ const ProjectCard = ({ project }: { project: IProject }) => (
         </div>
       </div>
 
-      <p className="text-muted-foreground mb-4 line-clamp-2">{project.description}</p>
+      <p className="text-muted-foreground mb-4 line-clamp-2">
+        {project.description}
+      </p>
 
       <div className="flex flex-wrap gap-2 mb-4">
         {project.tags.map((tag) => (
@@ -69,12 +77,16 @@ const ProjectCard = ({ project }: { project: IProject }) => (
           {project.createdAt}
         </div>
         <div className="flex gap-2">
-          <Button size="sm" variant="ghost" className="h-8 px-2">
-            <Github className="h-4 w-4" />
-          </Button>
-          <Button size="sm" variant="ghost" className="h-8 px-2">
-            <ExternalLink className="h-4 w-4" />
-          </Button>
+          <Link href={`/projects/${project.slug}`} target="_blank" >
+              <Button
+            size="sm"
+            variant="secondary"
+            className="bg-background/80 backdrop-blur-sm"
+          >
+            <Eye className="h-4 w-4 mr-1" />
+            View Details
+            </Button>
+          </Link>
         </div>
       </div>
     </CardContent>

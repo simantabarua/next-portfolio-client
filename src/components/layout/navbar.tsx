@@ -27,18 +27,18 @@ export default function Navbar() {
   }, []);
 
   const navItems = [
-    { name: "Home", href: "#home" },
-    { name: "About", href: "#about" },
-    { name: "Projects", href: "#projects" },
-    { name: "Blog", href: "#blog" },
-    { name: "Contact", href: "#contact" },
+    { name: "Home", href: "/#home" },
+    { name: "About", href: "/#about" },
+    { name: "Projects", href: "/projects" },
+    { name: "Blog", href: "/blogs" },
+    { name: "Contact", href: "/#contact" },
   ];
 
   return (
     <nav
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-background backdrop-blur-xl border-b border-border shadow-lg"
+          ? "bg-background backdrop-blur-xl   shadow-lg "
           : "bg-transparent backdrop-blur-sm"
       }`}
     >
@@ -71,7 +71,6 @@ export default function Navbar() {
 
           {/* Right side buttons */}
           <div className="hidden md:flex items-center space-x-4 text-secondary">
-          
             <Button variant="ghost" size="icon" className="rounded-full">
               <Github className="h-5 w-5" />
             </Button>

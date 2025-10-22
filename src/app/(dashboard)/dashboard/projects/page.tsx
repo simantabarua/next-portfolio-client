@@ -1,6 +1,3 @@
-"use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   FolderOpen,
   Plus,
@@ -32,41 +29,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  ProjectModal,
-  ProjectFormData,
-} from "@/components/dashboard/project-modal";
+
+import { ProjectModal } from "@/components/dashboard/project-modal";
 import { getProjects } from "@/services/project.service";
 import { IProject } from "@/interface";
 
 export default async function Projects() {
-  const router = useRouter();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState<"create" | "edit">("create");
-  const [selectedProject, setSelectedProject] = useState<
-    ProjectFormData | undefined
-  >();
-
   const projects = await getProjects();
-  const filteredProjects = projects.filter((project: IProject) => {
-    const matchesSearch =
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.tags.some((tag) =>
-        tag.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    const matchesStatus = statusFilter === "all";
-    return matchesSearch && matchesStatus;
-  });
 
   const stats = {
     total: 12,
@@ -76,25 +45,6 @@ export default async function Projects() {
     totalStars: 150,
     totalForks: 45,
     totalViews: 1200,
-  };
-
-  const handleCreateProject = () => {
-    setModalMode("create");
-    setSelectedProject(undefined);
-    setIsModalOpen(true);
-  };
-
-  const handleEditProject = (project: any) => {
-    // Navigate to the edit page instead of opening modal
-    router.push(`projects/edit/${project.slug}`);
-  };
-
-  const handleProjectSubmit = async (data: ProjectFormData) => {
-    console.log("Project data:", data);
-    // API call would go here
-    alert(
-      `${modalMode === "create" ? "Created" : "Updated"} project successfully!`
-    );
   };
 
   const getStatusBadge = (status: string) => {
@@ -142,28 +92,9 @@ export default async function Projects() {
       {/* Main Content */}
       <div className="flex-1 overflow-auto">
         {/* Header */}
-        <header className="border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-40">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <div className="flex items-center gap-4">
-                <h1 className="text-xl font-semibold">Projects</h1>
-                <Badge variant="outline" className="text-xs">
-                  Template
-                </Badge>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <Button
-                  className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white"
-                  onClick={handleCreateProject}
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  New Project
-                </Button>
-              </div>
-            </div>
-          </div>
-        </header>
+        <div className="max-w-7xl mx-auto py-4 flex items-end justify-end gap-4">
+          <ProjectModal />
+        </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
           {/* Stats Overview */}
@@ -218,47 +149,20 @@ export default async function Projects() {
             </Card>
           </div>
 
-          {/* Filters */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-6">
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full sm:w-48">
-                <SelectValue placeholder="Filter by status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="published">Published</SelectItem>
-                <SelectItem value="draft">Draft</SelectItem>
-                <SelectItem value="archived">Archived</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
           {/* Projects Grid */}
           <div className="space-y-4">
-            {filteredProjects.length === 0 ? (
+            {projects?.length === 0 ? (
               <Card>
                 <CardContent className="text-center py-12">
                   <FolderOpen className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
                   <h3 className="text-lg font-semibold mb-2">
                     No projects found
                   </h3>
-                  <p className="text-muted-foreground mb-4">
-                    {searchTerm || statusFilter !== "all"
-                      ? "Try adjusting your search or filters"
-                      : "Create your first project to get started"}
-                  </p>
-                  <Button
-                    className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white"
-                    onClick={handleCreateProject}
-                  >
-                    <Plus className="mr-2 h-4 w-4" />
-                    Create Project
-                  </Button>
                 </CardContent>
               </Card>
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {filteredProjects.map((project: IProject) => (
+                {projects?.map((project: IProject) => (
                   <Card
                     key={project.id}
                     className="hover:shadow-lg transition-shadow"
@@ -301,9 +205,7 @@ export default async function Projects() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem
-                              onClick={() => handleEditProject(project)}
-                            >
+                            <DropdownMenuItem>
                               <Edit className="mr-2 h-4 w-4" />
                               Edit
                             </DropdownMenuItem>
@@ -384,15 +286,6 @@ export default async function Projects() {
           </div>
         </div>
       </div>
-
-      {/* Project Modal */}
-      <ProjectModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleProjectSubmit}
-        initialData={selectedProject}
-        mode={modalMode}
-      />
     </>
   );
 }

@@ -13,7 +13,6 @@ import {
   LogOut,
   Menu,
   X,
-  Home,
   TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -29,11 +28,6 @@ interface SidebarItem {
 
 const sidebarItems: SidebarItem[] = [
   {
-    title: "Dashboard",
-    href: "/dashboard",
-    icon: Home,
-  },
-  {
     title: "Analytics",
     href: "/dashboard/analytics",
     icon: BarChart3,
@@ -42,13 +36,11 @@ const sidebarItems: SidebarItem[] = [
     title: "Blog Posts",
     href: "/dashboard/blogs",
     icon: FileText,
-    badge: "24",
   },
   {
     title: "Projects",
     href: "/dashboard/projects",
     icon: FolderOpen,
-    badge: "18",
   },
   {
     title: "Users",
