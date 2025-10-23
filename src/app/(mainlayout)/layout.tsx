@@ -4,6 +4,7 @@ import "../globals.css";
 import SplashCursor from "@/components/SplashCursor";
 import Navbar from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
+import AuthProvider from "@/provider/AuthProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,9 +32,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* <SplashCursor /> */}
-        <Navbar />
-        {children}
-        <Footer />
+        <AuthProvider>
+          <Navbar />
+          {children}
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Moon, Sun, Menu, X, Github, Linkedin, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
+import { useSession } from "next-auth/react";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,6 +26,9 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const session = useSession();
+  console.log(session);
 
   const navItems = [
     { name: "Home", href: "/#home" },
@@ -54,7 +58,7 @@ export default function Navbar() {
             </a>
           </div>
 
-          {/* Desktop Navigation */}
+          {/* Desktop  */}
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-4">
               {navItems.map((item) => (
@@ -69,7 +73,6 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Right side buttons */}
           <div className="hidden md:flex items-center space-x-4 text-secondary">
             <Button variant="ghost" size="icon" className="rounded-full">
               <Github className="h-5 w-5" />
@@ -80,15 +83,24 @@ export default function Navbar() {
             <Button variant="ghost" size="icon" className="rounded-full">
               <Mail className="h-5 w-5" />
             </Button>
-            <Button
-              asChild
-              className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white"
-            >
-              <a href="/login">Login</a>
-            </Button>
+            {session.status === "unauthenticated" ? (
+              <Button
+                asChild
+                className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white"
+              >
+                <a href="/login">Login</a>
+              </Button>
+            ) : (
+              <Button
+                asChild
+                className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white"
+              >
+                <a href="/dashboard/analytics">Dashboard</a>
+              </Button>
+            )}
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile  */}
           <div className="md:hidden">
             <Button
               variant="ghost"
@@ -149,12 +161,21 @@ export default function Navbar() {
                 </Button>
               </div>
               <div className="mt-3 px-3">
-                <Button
-                  asChild
-                  className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white"
-                >
-                  <a href="/login">Login</a>
-                </Button>
+                {session.status === "unauthenticated" ? (
+                  <Button
+                    asChild
+                    className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white"
+                  >
+                    <a href="/login">Login</a>
+                  </Button>
+                ) : (
+                  <Button
+                    asChild
+                    className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white"
+                  >
+                    <a href="/dashboard/analytics">Dashboard</a>
+                  </Button>
+                )}
               </div>
             </div>
           </div>
